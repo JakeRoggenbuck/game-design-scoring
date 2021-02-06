@@ -1,0 +1,9 @@
+keyring==18.0.1
+mypy_extensions==0.4.3
+numpy==1.19.2
+backports.statistics==0.1.0
+Cython==0.29.21
+ipaddr==2.2.0
+ordereddict==1.1
+tensorflow==2.4.1
+wincertstore==0.2
