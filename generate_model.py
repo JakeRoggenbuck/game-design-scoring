@@ -5,41 +5,73 @@ import numpy as np
 import csv
 from dataclasses import dataclass
 
-
-class Data:
-    def __init__(self):
-        self.temp_X = []
-        self.temp_Y = []
-
-    def add_row(self, x, y):
-        self.temp_X.append(x)
-        self.temp_Y.append([y])
-
-    def make_arrays(self):
-        self.X = np.array([*self.temp_X])
-        self.Y = np.array([*self.temp_Y])
+def open_csv():
+    with open('./point-weighting-combined-new.csv', newline='') as csvfile:
+        data = list(csv.reader(csvfile))
+    return data
 
 
-model_data = Data()
+def get_data_Y():
+    data = open_csv()
 
-with open('./point-weighting-combined.csv', newline='') as csvfile:
-    data = list(csv.reader(csvfile))
     useful_data = data[2:]
-    for row in useful_data:
-        result = [int(y) for y in row[1]]
-        raw_data_row = [int(x) for x in row[2:]]
-        model_data.add_row(raw_data_row, result)
 
-model_data.make_arrays()
+    new = []
 
-model = Sequential()
-model.add(Dense(units=128, activation='sigmoid', input_dim=16))
-model.add(Dense(units=1, activation='sigmoid'))
+    buff = 0
+    index = 0
+    while buff < len(useful_data):
+        a = useful_data[buff + index][1]
 
-sgd = optimizers.SGD(lr=1)
-model.compile(loss='mean_squared_error', optimizer=sgd)
+        new.append(np.array([int(a)]))
+        buff += 2
 
-model.fit(model_data.X, model_data.Y, epochs=1500, verbose=False)
+    return np.array([*new])
 
-print(model.summary())
-model.save('neural_network.model')
+
+
+def get_data_X():
+    data = open_csv()
+
+    useful_data = data[2:]
+
+    new = []
+
+    buff = 0
+    index = 0
+    while buff < len(useful_data):
+        a = useful_data[buff + index]
+        b = useful_data[buff + index + 1]
+
+        total = []
+        for it_a, it_b in zip(a[2:], b[2:]):
+            total.append(int(it_a) - int(it_b))
+
+        new.append(np.array(total))
+        buff += 2
+
+    return np.array([*new])
+
+
+if __name__ == "__main__":
+
+    Y = get_data_Y()
+    X = get_data_X()
+
+    print(Y)
+    print(len(Y))
+
+    print(X)
+    print(len(X))
+
+    model = Sequential()
+    model.add(Dense(units=64, activation='sigmoid', input_dim=16))
+    model.add(Dense(units=1, activation='sigmoid'))
+
+    sgd = optimizers.SGD(lr=1)
+    model.compile(loss='mean_squared_error', optimizer=sgd)
+
+    model.fit(X, Y, epochs=1500, verbose=False)
+
+    print(model.summary())
+    model.save('neural_network.model')

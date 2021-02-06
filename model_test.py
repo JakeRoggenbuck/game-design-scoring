@@ -1,12 +1,18 @@
 from tensorflow import keras
 import numpy as np
+import csv
+
+from generate_model import get_data_Y, get_data_X
+
 
 # Import the model made by ./generate_model.py
 model = keras.models.load_model('neural_network.model')
 
-# Give it match data to predict
-to_predict = np.array([5, 0, 1, 1, 1, 1, 4, 3, 4, 0, 3, 3, 3, 3, 3, 6])
+X = get_data_X()
+Y = get_data_Y()
 
 # Get the result and print it
-result = model.predict(np.array([to_predict]))
-print(result)
+for x, y in zip(X, Y):
+    result = model.predict(np.array([x]))
+    # print(result[0][0])
+    print(y[0], result[0][0])
