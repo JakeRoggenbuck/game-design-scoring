@@ -2,7 +2,7 @@
 
 
 ### Data
-The data that this model used to train is the csv `./point-weighting-combined.csv` and was made in a spreedsheet
+The data that this model used to train is the csv `./point-weighting-combined-new.csv` and was made in a spreedsheet
 
 ### Building the model
 Run the script `./generate_model.py` to build the model
@@ -11,16 +11,26 @@ Run the script `./generate_model.py` to build the model
 To run the model that you built, this is all the code needed
 
 ```py
-from tensorflow import keras  
-import numpy as np  
-  
-# Import the model made by ./generate_model.py  
-model = keras.models.load_model('neural_network.model')       
-                                                              
-# Give it match data to predict
-to_predict = np.array([5, 0, 1, 1, 1, 1, 4, 3, 4, 0, 3, 3, 3, 3, 3, 6])
-                                                              
-# Get the result and print it
-result = model.predict(np.array([to_predict]))                
-print(result)                       
+from tensorflow import keras                                                   
+import numpy as np                                                             
+import csv                                                                     
+                                                                               
+from generate_model import get_data_Y, get_data_X                              
+                                                                               
+                                                                               
+# Import the model made by ./generate_model.py                                 
+model = keras.models.load_model('neural_network.model')                        
+                                                                               
+# Gets the data from the model generator file "./generate_model.py"            
+X = get_data_X()                                                               
+Y = get_data_Y()                                                               
+                                                                               
+                                                                               
+def test_each_match():                                                         
+    # Get the result actual win value, and the one predicted by the model      
+    for x, y in zip(X, Y):                                                     
+        # Predicts the Y value from a given X                                  
+        result = model.predict(np.array([x]))                                  
+        # Prints the values in the (actual, predict) format                    
+        print(y[0], result[0][0])                                              
 ```
