@@ -5,5 +5,5 @@ backports.statistics==0.1.0
 Cython==0.29.21
 ipaddr==2.2.0
 ordereddict==1.1
-tensorflow==2.4.1
+tensorflow==2.12.1
 wincertstore==0.2
